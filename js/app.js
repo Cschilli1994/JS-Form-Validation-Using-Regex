@@ -213,6 +213,7 @@ form.on('submit',function(e){
  //check for an activity selected
   if(activitesChecked<=0){
   $('.activities legend').text('Select atleast one activity!').css({color:'red'});
+  e.preventDefault();
  }else{
   $('.activities legend').text('Register for Activities').css({color:'darkblue'});
  }
