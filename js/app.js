@@ -14,7 +14,7 @@ const $jobRole = $("#title");
 //--------------------------Name-------------------------------------------------
     //Check Name has at least 2 char (space) 2 char.
 function checkName(name){
-  return /[\w]{2,20}\s[\w]{2,20}/i.test(name);
+  return /[\w]{2,20}[\s[\w]{2,20}]?/i.test(name);
 }
 
 
@@ -118,7 +118,7 @@ $('.activities').on('change' , function(e){
 //===============================================================================
 //hides all payment option displays 
 const $creditCard = $('#credit-card');
-  $creditCard.hide();
+  //$creditCard.hide();
 const $bitcoin = $('#bitcoin');
   $bitcoin.hide();
 const $paypal = $('#paypal');
@@ -126,23 +126,21 @@ const $paypal = $('#paypal');
 //------------------------------------
 const $payField = $('#payment');
 //check payment type
-let paymentIndex;
+let paymentIndex = 0;
 let selectedPayment;
 //display correct div for selected method and hides previous method
 function displayPaymentOption(payment , hideOrShow){
     const payMethod = $('#'+payment);
+    $paypal.hide();
+    $bitcoin.hide();
+    $creditCard.hide();
     if(hideOrShow==='show'){
         payMethod.show();
-    }else{
-        payMethod.hide();
     }
 }
 $payField.on('change', function(e){ 
     if(e.target.id==="payment"){
-        //removes previous payment method information
-        if(paymentIndex>=0){
-        displayPaymentOption(selectedPayment[paymentIndex].value,'hide');
-        }
+     
         //sets to selected payment index
         paymentIndex =  e.target.selectedIndex;
         selectedPayment = e.target.children;
@@ -153,15 +151,15 @@ $payField.on('change', function(e){
   //----------------------------credit card-----------------------------------------
     //check credit card number is 13-16 numbers
     function checkCreditCard(CCnum){
-        return /[0-9]{13,16}/.test(CCnum);
+        return /^[0-9]{13,16}$/.test(CCnum);
       }
     // check CVV code is 3-4 digits
     function checkCVV(CVV){
-        return /[0-9]{3}/.test(CVV);;
+        return /^[0-9]{3}$/.test(CVV);;
       }
     // check postal code is 5 digits
     function checkZip(zip){
-        return /[0-9]{5}/.test(zip);
+        return /^[0-9]{5}$/.test(zip);
       }
       
 //                            Submit/validation
@@ -188,6 +186,19 @@ function validate(checkFunc, selector, textvalue, e){
       
   }
 }
+//realtime validation for name input
+$name.on('blur', function(e){
+	if($name.val()!==""){
+		validate(checkName, $name, "Enter first and/or last name.", e);
+	}
+});
+//realtime error message for incorrect email
+$email.on('blur', function(e){
+	if($email.val()!==""){
+		validate(checkMail, $email, "Email must be in name@mail.com format.", e);
+	}
+});
+
 form.on('submit',function(e){
   validate(checkName,$name,"Incorrect Name format.",e);
   validate(checkMail, $email, "Incorrect email format 'email@mail.com'",e);
@@ -198,7 +209,7 @@ form.on('submit',function(e){
   $('.activities legend').text('Register for Activities').css({color:'darkblue'});
  }
   //if credit card selected validate card info
-  if(paymentIndex===1){
+  if(paymentIndex===0){
     validate(checkCreditCard, $('#cc-num'),"Invalid Credit Card Number must be 13-16 digits.", e);
     validate(checkCVV, $('#cvv'),"Invalid CVV must be 3 digits.", e);
     validate(checkZip, $('#zip'),"Invalid zip code must be 5 digits.", e);
