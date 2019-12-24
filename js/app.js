@@ -14,14 +14,14 @@ const $jobRole = $("#title");
 //--------------------------Name-------------------------------------------------
     //Check Name has at least 2 char (space) 2 char.
 function checkName(name){
-  return /[\w]{2,20}[\s[\w]{2,20}]?/i.test(name);
+  return /^\w{2,20}(\s[\w]{2,20})?$/i.test(name);
 }
 
 
 //--------------------------Email------------------------------------------------
     //Check for valid email format  Chars@chars.3chars
 function checkMail(mail){
-  return /[a-z|0-9]{2,20}@[a-z]{3,10}.[a-z]{3}/i.test(mail);
+  return /^[a-z|0-9]{2,20}@[a-z]{3,10}.[a-z]{3}$/i.test(mail);
 }
 
 
@@ -54,11 +54,13 @@ $shirtBox.on('change', function(e){
     //display color option selection
       $tColors.show();
       $Color.prop("selectedIndex", 0);
+      $colorOption.slice(0,1).hide();
       //check t shirt design
       if(e.target.value==='js puns'){
        //only display available colors for design
        $colorOption.slice(1,4).show();
        $colorOption.slice(4,).hide();
+       
       }
         //check t shirt design
        if(e.target.value==='heart js'){
@@ -118,7 +120,10 @@ $('.activities').on('change' , function(e){
 //===============================================================================
 //hides all payment option displays 
 const $creditCard = $('#credit-card');
-  //$creditCard.hide();
+$('#cc-num').attr('maxlength',16);
+$('#zip').attr('maxlength',5);
+$('#cvv').attr('maxlength',3);
+
 const $bitcoin = $('#bitcoin');
   $bitcoin.hide();
 const $paypal = $('#paypal');
@@ -128,6 +133,9 @@ const $payField = $('#payment');
 //check payment type
 let paymentIndex = 0;
 let selectedPayment;
+
+
+
 //display correct div for selected method and hides previous method
 function displayPaymentOption(payment , hideOrShow){
     const payMethod = $('#'+payment);
